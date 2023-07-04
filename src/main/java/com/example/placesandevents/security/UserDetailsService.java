@@ -1,6 +1,7 @@
 package com.example.placesandevents.security;
 
 import com.example.placesandevents.domain.user.repository.UserRepository;
+import com.example.placesandevents.exception.customexceptions.UserNotFoundException;
 import com.example.placesandevents.security.model.AuthorizedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,6 @@ public class UserDetailsService implements org.springframework.security.core.use
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByLogin(username)
                 .map(AuthorizedUser::new)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

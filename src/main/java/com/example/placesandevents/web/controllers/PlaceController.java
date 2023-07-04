@@ -1,6 +1,7 @@
 package com.example.placesandevents.web.controllers;
 
 import com.example.placesandevents.commons.dto.OperationResponseDTO;
+import com.example.placesandevents.exception.customexceptions.BadRequest;
 import com.example.placesandevents.place.PlaceService;
 import com.example.placesandevents.place.dto.PlaceRequestDTO;
 import com.example.placesandevents.place.dto.PlaceResponseDTO;
@@ -24,6 +25,7 @@ public class PlaceController {
 
     @GetMapping("/all")
     ResponseEntity<List<PlaceResponseDTO>> getAllPlaces() {
-        return ResponseEntity.ok(placeService.getAllPlacesByUser());
+        throw new BadRequest("lalala");
+//        return ResponseEntity.ok(placeService.getAllPlacesByUser());
     }
 }

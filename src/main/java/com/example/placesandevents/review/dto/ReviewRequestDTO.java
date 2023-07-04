@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReviewRequestDTO {
 
+    private Long placeId;
     private Integer rating;
     private String reviewText;
 }
