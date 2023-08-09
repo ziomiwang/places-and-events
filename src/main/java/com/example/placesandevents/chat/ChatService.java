@@ -22,7 +22,7 @@ public class ChatService {
         ChatMessage chatMessage = ChatMessage.builder()
                 .message(message.getMessage())
                 .senderName(message.getSenderName())
-                .roomId(message.getRoomId())
+                .roomId(message.getEventId())
                 .build();
 
         chatRepository.save(chatMessage);

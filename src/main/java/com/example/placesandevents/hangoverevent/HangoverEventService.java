@@ -52,21 +52,21 @@ public class HangoverEventService {
     }
 
     public RoomModeResponse updateEventRoomMode(RoomModeRequest roomModeRequest){
-        eventObjectRepository.updateRoomType(roomModeRequest.getRoomId(), roomModeRequest.getMode());
+        eventObjectRepository.updateRoomType(roomModeRequest.getEventId(), roomModeRequest.getMode());
         return RoomModeResponse.builder()
                 .mode(roomModeRequest.getMode())
                 .build();
     }
 
     public ParticipantResponse updateParticipants(ParticipantRequest participantRequest){
-        eventObjectRepository.updateParticipant(participantRequest.getRoomId(), participantRequest.getParticipant());
+        eventObjectRepository.updateParticipant(participantRequest.getEventId(), participantRequest.getParticipant());
         return ParticipantResponse.builder()
                 .participantName(participantRequest.getParticipant())
                 .build();
     }
 
     public PlaceResponse updatePlaces(PlaceRequest placeRequest){
-        eventObjectRepository.updatePlaces(placeRequest.getRoomId(), placeRequest.getPlace());
+        eventObjectRepository.updatePlaces(placeRequest.getEventId(), placeRequest.getPlace());
         return PlaceResponse.builder()
                 .place(placeRequest.getPlace())
                 .build();
@@ -80,10 +80,10 @@ public class HangoverEventService {
         ChatMessage chatMessage = ChatMessage.builder()
                 .message(message.getMessage())
                 .senderName(message.getSenderName())
-                .roomId(message.getRoomId())
+                .roomId(message.getEventId())
                 .time(LocalDateTime.now())
                 .build();
-        eventObjectRepository.updateChatMessages(message.getRoomId(), chatMessage);
+        eventObjectRepository.updateChatMessages(message.getEventId(), chatMessage);
 
         return MessageResponse.builder()
                 .senderName(chatMessage.getSenderName())

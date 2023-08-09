@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class ParticipantRequest {
 
-    private String roomId;
+    private String eventId;
     private String participant;
 }

@@ -12,7 +12,7 @@ import lombok.*;
 public class MessageRequest {
 
     private String senderName;
-    private String roomId;
+    private String eventId;
     private String message;
     private Status status;
 }
