@@ -35,25 +35,25 @@ public class TestMessageController {
 
     @MessageMapping("/event-room-mode-request")
     public RoomModeResponse receiveEventRoomModeChange(@Payload RoomModeRequest roomModeRequest) {
-        simpMessagingTemplate.convertAndSendToUser(roomModeRequest.getRoomId(), "/event-mode", roomModeRequest);
+        simpMessagingTemplate.convertAndSendToUser(roomModeRequest.getEventId(), "/event-mode", roomModeRequest);
         return eventService.updateEventRoomMode(roomModeRequest);
     }
 
     @MessageMapping("/event-participant-request")
     public ParticipantResponse receiveParticipantChange(@Payload ParticipantRequest participantRequest) {
-        simpMessagingTemplate.convertAndSendToUser(participantRequest.getRoomId(), "/event-participant", participantRequest);
+        simpMessagingTemplate.convertAndSendToUser(participantRequest.getEventId(), "/event-participant", participantRequest);
         return eventService.updateParticipants(participantRequest);
     }
 
     @MessageMapping("/event-place-request")
     public PlaceResponse receivePlaceChange(@Payload PlaceRequest placeRequest) {
-        simpMessagingTemplate.convertAndSendToUser(placeRequest.getRoomId(), "/event-place", placeRequest);
+        simpMessagingTemplate.convertAndSendToUser(placeRequest.getEventId(), "/event-place", placeRequest);
         return eventService.updatePlaces(placeRequest);
     }
 
     @MessageMapping("/event-message-request")
     public MessageResponse receivePrivateMessage(@Payload MessageRequest message){
-        simpMessagingTemplate.convertAndSendToUser(message.getRoomId(), "/event-chat", message);
+        simpMessagingTemplate.convertAndSendToUser(message.getEventId(), "/event-chat", message);
         return eventService.updateChatMessages(message);
     }
 }

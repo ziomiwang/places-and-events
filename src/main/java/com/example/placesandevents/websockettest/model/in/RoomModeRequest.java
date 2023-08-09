@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class RoomModeRequest {
 
-    private String roomId;
+    private String eventId;
     private String mode;
 }

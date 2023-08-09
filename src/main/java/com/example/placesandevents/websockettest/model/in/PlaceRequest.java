@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class PlaceRequest {
 
-    private String roomId;
+    private String eventId;
     private String place;
 }
