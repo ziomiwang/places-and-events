@@ -1,18 +1,14 @@
 package com.example.placesandevents.websockettest.model.in;
 
-import com.example.placesandevents.websockettest.model.Status;
 import lombok.*;
 
 @Getter
 @Setter
-@Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequest {
+@ToString(callSuper = true)
+public class TestMessageRequest extends EventRequest {
 
     private String senderName;
-    private String eventId;
     private String message;
-    private Status status;
 }

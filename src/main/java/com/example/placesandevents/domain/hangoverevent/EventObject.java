@@ -15,7 +15,8 @@ import java.util.*;
 public class EventObject {
 
     private String eventId;
-    private String name;
+    private String eventName;
+    private String owner;
     private ChannelType channelType;
     private Set<String> places;
     private Set<String> participants;
@@ -24,7 +25,7 @@ public class EventObject {
     public static EventObject map(CreateEventObjectDTO eventObjectDTO) {
         return EventObject.builder()
                 .eventId(eventObjectDTO.getName())
-                .name(eventObjectDTO.getName())
+                .eventName(eventObjectDTO.getName())
                 .channelType(ChannelType.valueOf(eventObjectDTO.getChannelType()))
                 .places(new HashSet<>(eventObjectDTO.getPlaces()))
                 .participants(new HashSet<>(eventObjectDTO.getParticipants()))

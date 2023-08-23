@@ -1,13 +1,12 @@
 package com.example.placesandevents.websockettest.model.out;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class PlaceResponse {
+@SuperBuilder
+public class TestPlaceResponse extends EventResponse {
 
     private String place;
 }

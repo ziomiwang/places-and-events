@@ -4,12 +4,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaceRequest {
+public class TestParticipantRequest extends EventRequest{
 
-    private String eventId;
-    private String place;
+    private String participant;
 }

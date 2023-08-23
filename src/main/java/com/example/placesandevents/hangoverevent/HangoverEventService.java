@@ -17,14 +17,8 @@ import com.example.placesandevents.hangoverevent.dto.CreateEventObjectDTO;
 import com.example.placesandevents.hangoverevent.dto.HEChannelRequestDTO;
 import com.example.placesandevents.hangoverevent.dto.HangoverEventRequestDTO;
 import com.example.placesandevents.hangoverevent.dto.SimpleEventObjectDTO;
-import com.example.placesandevents.websockettest.model.in.MessageRequest;
-import com.example.placesandevents.websockettest.model.in.ParticipantRequest;
-import com.example.placesandevents.websockettest.model.in.PlaceRequest;
-import com.example.placesandevents.websockettest.model.in.RoomModeRequest;
-import com.example.placesandevents.websockettest.model.out.MessageResponse;
-import com.example.placesandevents.websockettest.model.out.ParticipantResponse;
-import com.example.placesandevents.websockettest.model.out.PlaceResponse;
-import com.example.placesandevents.websockettest.model.out.RoomModeResponse;
+import com.example.placesandevents.websockettest.model.in.*;
+import com.example.placesandevents.websockettest.model.out.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,37 +40,73 @@ public class HangoverEventService {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
 
-    public OperationResponseDTO createNewEventObject(CreateEventObjectDTO eventObject){
-        eventObjectRepository.save(EventObject.map(eventObject));
+    public EventResponse handleEventRequest(EventRequest eventRequest){
+        System.out.println("HANDLING EVENT");
+        switch (eventRequest.getEventRequestType()){
+            case MESSAGE -> {
+                return handleMessageRequest((TestMessageRequest) eventRequest);
+            }
+            case PARTICIPANT -> {
+                return handleParticipantRequest((TestParticipantRequest) eventRequest);
+            }
+            case PLACE -> {
+                return handlePlaceRequest((TestPlaceRequest) eventRequest);
+            }
+            case MODE -> {
+                return handleRoomModeRequest((TestRoomModeRequest) eventRequest);
+            }
+            default -> throw new BadRequest("Bad request type");
+        }
+    }
+
+    public OperationResponseDTO createNewEventObject(CreateEventObjectDTO eventObjectRequest, String username) {
+        EventObject eventObject = EventObject.map(eventObjectRequest);
+        eventObject.getParticipants().add(username);
+        eventObject.setOwner(username);
+        eventObjectRepository.save(eventObject);
         return ResponseHelper.buildSuccessResponse("success");
     }
 
-    public RoomModeResponse updateEventRoomMode(RoomModeRequest roomModeRequest){
+    public TestRoomModeResponse handleRoomModeRequest(TestRoomModeRequest roomModeRequest) {
+        System.out.println("HANDLING ROOM: " + roomModeRequest);
         eventObjectRepository.updateRoomType(roomModeRequest.getEventId(), roomModeRequest.getMode());
-        return RoomModeResponse.builder()
+        return TestRoomModeResponse.builder()
+                .eventOperationType(roomModeRequest.getEventOperationType())
+                .eventRequestType(roomModeRequest.getEventRequestType())
                 .mode(roomModeRequest.getMode())
                 .build();
     }
 
-    public ParticipantResponse updateParticipants(ParticipantRequest participantRequest){
-        eventObjectRepository.updateParticipant(participantRequest.getEventId(), participantRequest.getParticipant());
-        return ParticipantResponse.builder()
-                .participantName(participantRequest.getParticipant())
+    public TestParticipantResponse handleParticipantRequest(TestParticipantRequest participantRequest) {
+        System.out.println("HANDLING PARTICIPANT: " + participantRequest);
+        if (participantRequest.getEventOperationType().equals(EventOperationType.ADD)) {
+            eventObjectRepository.addParticipant(participantRequest.getEventId(), participantRequest.getParticipant());
+        } else {
+            eventObjectRepository.removeParticipant(participantRequest.getEventId(), participantRequest.getParticipant());
+        }
+        return TestParticipantResponse.builder()
+                .eventOperationType(participantRequest.getEventOperationType())
+                .eventRequestType(participantRequest.getEventRequestType())
+                .participant(participantRequest.getParticipant())
                 .build();
     }
 
-    public PlaceResponse updatePlaces(PlaceRequest placeRequest){
-        eventObjectRepository.updatePlaces(placeRequest.getEventId(), placeRequest.getPlace());
-        return PlaceResponse.builder()
+    public TestPlaceResponse handlePlaceRequest(TestPlaceRequest placeRequest) {
+        System.out.println("HANDLING PLACE: " + placeRequest);
+        if (placeRequest.getEventOperationType().equals(EventOperationType.ADD)) {
+            eventObjectRepository.addPlace(placeRequest.getEventId(), placeRequest.getPlace());
+        } else {
+            eventObjectRepository.removePlace(placeRequest.getEventId(), placeRequest.getPlace());
+        }
+        return TestPlaceResponse.builder()
+                .eventOperationType(placeRequest.getEventOperationType())
+                .eventRequestType(placeRequest.getEventRequestType())
                 .place(placeRequest.getPlace())
                 .build();
     }
 
-    public MessageResponse updateChatMessages(MessageRequest message){
-//        if (message.getStatus().equals(Status.JOIN)){
-//            return;
-//        }
-
+    public TestMessageResponse handleMessageRequest(TestMessageRequest message) {
+        System.out.println("HANDLING MESSAGE: " + message);
         ChatMessage chatMessage = ChatMessage.builder()
                 .message(message.getMessage())
                 .senderName(message.getSenderName())
@@ -85,15 +115,16 @@ public class HangoverEventService {
                 .build();
         eventObjectRepository.updateChatMessages(message.getEventId(), chatMessage);
 
-        return MessageResponse.builder()
+        return TestMessageResponse.builder()
+                .eventOperationType(message.getEventOperationType())
+                .eventRequestType(message.getEventRequestType())
                 .senderName(chatMessage.getSenderName())
                 .message(chatMessage.getMessage())
-                .time(chatMessage.getTime().toString())
                 .build();
     }
 
-    public List<SimpleEventObjectDTO> getAllEvents() {
-        return eventObjectRepository.getAllEvents()
+    public List<SimpleEventObjectDTO> getAllEvents(String user) {
+        return eventObjectRepository.getAllEvents(user)
                 .stream()
                 .map(SimpleEventObjectDTO::map)
                 .collect(Collectors.toList());
@@ -126,7 +157,7 @@ public class HangoverEventService {
         User owner = getUserFromPrincipal(principal);
         Optional<HangoverEvent> byIdAndOwnerId = hangoverEventRepository.findByIdAndOwnerId(request.getEventId(), owner.getId());
 
-        if (byIdAndOwnerId.isEmpty()){
+        if (byIdAndOwnerId.isEmpty()) {
             throw new BadRequest("test");
         }
         byIdAndOwnerId.get().setChannelType(ChannelType.valueOf(request.getChannelType()));

@@ -18,9 +18,9 @@ public class SimpleEventObjectDTO {
 
     public static SimpleEventObjectDTO map(EventObject eventObject) {
         return SimpleEventObjectDTO.builder()
-                .eventId(eventObject.getName())
+                .eventId(eventObject.getEventName())
                 .channelType(eventObject.getChannelType())
-                .name(eventObject.getName())
+                .name(eventObject.getEventName())
                 .build();
     }
 }

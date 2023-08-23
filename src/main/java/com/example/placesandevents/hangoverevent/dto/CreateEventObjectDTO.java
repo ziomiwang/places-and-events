@@ -13,6 +13,7 @@ public class CreateEventObjectDTO {
 
     private String name;
     private String channelType;
+    private String ownerName;
     private List<String> places;
     private List<String> participants;
 }
