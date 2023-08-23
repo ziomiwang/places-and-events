@@ -1,6 +1,5 @@
 package com.example.placesandevents.web.controllers;
 
-import com.example.placesandevents.chat.ChatService;
 import com.example.placesandevents.commons.dto.OperationResponseDTO;
 import com.example.placesandevents.domain.hangoverevent.EventObject;
 import com.example.placesandevents.hangoverevent.HangoverEventService;
@@ -21,13 +20,13 @@ public class HangoverEventController {
     private final ChatService chatService;
 
     @PostMapping("/new")
-    public ResponseEntity<OperationResponseDTO> createNewEventObject(@RequestBody CreateEventObjectDTO eventObject) {
-        return ResponseEntity.ok(eventService.createNewEventObject(eventObject));
+    public ResponseEntity<OperationResponseDTO> createNewEventObject(@RequestBody CreateEventObjectDTO eventObject, @RequestParam String username) {
+        return ResponseEntity.ok(eventService.createNewEventObject(eventObject, username));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<SimpleEventObjectDTO>> getAllEventObjects() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+    public ResponseEntity<List<SimpleEventObjectDTO>> getAllEventObjects(@RequestParam String username) {
+        return ResponseEntity.ok(eventService.getAllEvents(username));
     }
 
     @GetMapping("/single/{eventId}")

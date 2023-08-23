@@ -17,21 +17,33 @@ public class EventObjectRepository {
     private final Map<String, EventObject> eventDb = new HashMap<>();
 
     public void save(EventObject eventObject) {
-        eventDb.put(eventObject.getName(), eventObject);
+        eventDb.put(eventObject.getEventName(), eventObject);
+        System.out.println("EVENTDB: " + eventDb);
     }
 
-    public void updateParticipant(String eventId, String participant){
+    public void addParticipant(String eventId, String participant){
         EventObject eventObject = eventDb.get(eventId);
         eventObject.getParticipants().add(participant);
         eventDb.put(eventId, eventObject);
     }
 
-    public void updatePlaces(String eventId, String place){
+    public void removeParticipant(String eventId, String participant){
+        EventObject eventObject = eventDb.get(eventId);
+        eventObject.getParticipants().remove(participant);
+        eventDb.put(eventId, eventObject);
+    }
+
+    public void addPlace(String eventId, String place){
         EventObject eventObject = eventDb.get(eventId);
         eventObject.getPlaces().add(place);
         eventDb.put(eventId, eventObject);
     }
 
+    public void removePlace(String eventId, String place){
+        EventObject eventObject = eventDb.get(eventId);
+        eventObject.getPlaces().remove(place);
+        eventDb.put(eventId, eventObject);
+    }
     public void updateChatMessages(String eventId, ChatMessage message){
         EventObject eventObject = eventDb.get(eventId);
         eventObject.getChatMessages().add(message);
@@ -44,8 +56,11 @@ public class EventObjectRepository {
         eventDb.put(eventId, eventObject);
     }
 
-    public List<EventObject> getAllEvents() {
-        return new ArrayList<>(eventDb.values());
+    public List<EventObject> getAllEvents(String user) {
+        return new ArrayList<>(eventDb.values())
+                .stream()
+                .filter(event -> event.getParticipants().contains(user))
+                .collect(Collectors.toList());
     }
 
     public EventObject getEventObjectById(String eventId){
